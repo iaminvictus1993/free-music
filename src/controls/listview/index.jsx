@@ -22,6 +22,7 @@ const ListView = function(props) {
 	const [shortCutList, setShortCutList] = useState([])
 	const [currentIndex, setCurrentIndex] = useState(0)
 	const [data, setData] = useState([])
+	const [isShowPop, setIsShowPop] = useState(false)
 	const [listHeight, setListHeight] = useState([])
 
 	useEffect(() => {
@@ -81,12 +82,12 @@ const ListView = function(props) {
 					})
 				}
 			</ul>
-			<div className="list-shortcut" onTouchStart={onShortcutTouchStart} onTouchMove={onShortcutTouchMove}>
+			<div className="list-shortcut" onTouchStart={onShortcutTouchStart} onTouchEnd={onShortcutTouchEnd} onTouchMove={onShortcutTouchMove}>
 				<ul>
 					{
 						shortCutList.map((item, index) => {
 							return (
-								<li className={classnames('item', {'current': currentIndex === index})} key={item} data-index={index}>{item}</li>
+								<li className={classnames('item', {'current': currentIndex === index})} key={item} data-attr={isShowPop?item:''} data-index={index}>{item}</li>
 							)
 						})
 					}
@@ -105,7 +106,11 @@ const ListView = function(props) {
 		</Scroll>
 	)
 
+ function onShortcutTouchEnd(e) {
+ 		setIsShowPop(false)
+ 	}
  function onShortcutTouchStart(e) {
+		setIsShowPop(true)
  		let anchorIndex = getData(e.target, 'index')
  		let firstTouch = e.touches[0]
  		touchRef.current.y1 = firstTouch.pageY
@@ -114,7 +119,7 @@ const ListView = function(props) {
  	}
 
  function	onShortcutTouchMove(e) {
- 		e.stopPropagation()
+		 e.stopPropagation()
  		let nextTouch = e.touches[0]
  		touchRef.current.y2 = nextTouch.pageY
  		let delta = (touchRef.current.y2 - touchRef.current.y1) / ANCHOR_HEIGHT | 0

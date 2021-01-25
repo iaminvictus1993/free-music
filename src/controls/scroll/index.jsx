@@ -35,6 +35,7 @@ class Scroll extends React.Component {
 
 			this.scroll = new BScroll(this.wrapperRef.current, {
 				probeType: this.props.probeType,
+				mouseWheel: true,
 				click: this.props.click
 			})
 
